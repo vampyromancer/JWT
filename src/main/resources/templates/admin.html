@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Админ</title>
+</head>
+<body>
+<div>
+    <p th:each="x, state : ${allUsers}">
+        <a th:text="${x.getUsername()} + ', has id: ' + ${x.getId()}">Имя пользователя</a>
+    </p>
+</div>
+<a href="/">Главная</a>
+</body>
+</html>
