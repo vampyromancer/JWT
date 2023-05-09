@@ -4,9 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import kz.zaletov.spring.springsecurity.models.Role;
 import kz.zaletov.spring.springsecurity.models.User;
-import kz.zaletov.spring.springsecurity.repositories.RoleRepository;
 import kz.zaletov.spring.springsecurity.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,11 +32,14 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
-        return user;
+        return user.get();
+    }
+    public User findUserByUsername(String username){
+        return userRepository.findByUsername(username).orElse(null);
     }
     public User findUserById(Long userId) {
         Optional<User> userFromDb = userRepository.findById(userId);
@@ -46,23 +48,14 @@ public class UserService implements UserDetailsService {
     public List<User> allUsers() {
         return userRepository.findAll();
     }
-    public boolean saveUser(User user) {
-        User userFromDB = userRepository.findByUsername(user.getUsername());
-
-        if (userFromDB != null) {
-            return false;
-        }
+    public void register(User user) {
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return true;
     }
-    public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void delete(Long userId) {
             userRepository.deleteById(userId);
-            return true;
-        }
-        return false;
     }
     public List<User> usergtList(Long idMin) {
         return em.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)

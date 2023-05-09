@@ -8,7 +8,7 @@
 </head>
 <body>
     <div th:if="${#authorization.expression('isAuthenticated')}">
-        <p th:text="${#authentication.getName()}"></p>
+        <b th:text="${#authentication.getName()}"></b>
     </div>
     <div sec:authorize="!isAuthenticated()">
         <h4><a href="/login">Войти</a></h4>
