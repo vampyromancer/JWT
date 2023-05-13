@@ -9,20 +9,21 @@ import java.util.Collection;
 import java.util.Set;
 
 @Entity
-@Table(name = "t_user")
-public class User implements UserDetails {
+@Table(name = "t_person")
+public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Size(min=2, message = "Не меньше 2 знаков")
     private String username;
+    private int age;
     @Size(min=2, message = "Не меньше 2 знаков")
     private String password;
     @Transient
     private String passwordConfirm;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
-    public User() {
+    public Person() {
     }
 
     public Long getId() {
@@ -57,39 +58,19 @@ public class User implements UserDetails {
         this.passwordConfirm = passwordConfirm;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
-
-    @Override
     public String getPassword() {
         return password;
     }
 
-    @Override
     public String getUsername() {
         return username;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
+    public int getAge() {
+        return age;
     }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
+    public void setAge(int age) {
+        this.age = age;
     }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
 }

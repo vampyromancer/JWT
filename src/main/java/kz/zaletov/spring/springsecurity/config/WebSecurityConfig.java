@@ -1,6 +1,6 @@
 package kz.zaletov.spring.springsecurity.config;
 
-import kz.zaletov.spring.springsecurity.services.UserService;
+import kz.zaletov.spring.springsecurity.services.PersonDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,15 +17,18 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig{
     @Autowired
-    private UserService userService;
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+    private final PersonDetailsService personDetailsService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public WebSecurityConfig(PersonDetailsService personDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.personDetailsService = personDetailsService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.authorizeHttpRequests().requestMatchers("/registration")
+        http.authorizeHttpRequests()
+                .requestMatchers("/registration")
                 .permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/news").hasRole("USER")
@@ -42,6 +45,6 @@ public class WebSecurityConfig{
 
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
+        auth.userDetailsService(personDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 }

@@ -1,8 +1,8 @@
 package kz.zaletov.spring.springsecurity.controllers;
 
 import jakarta.validation.Valid;
-import kz.zaletov.spring.springsecurity.models.User;
-import kz.zaletov.spring.springsecurity.services.UserService;
+import kz.zaletov.spring.springsecurity.models.Person;
+import kz.zaletov.spring.springsecurity.services.PersonDetailsService;
 import kz.zaletov.spring.springsecurity.util.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,29 +15,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class RegistrationController {
 
-    private final UserService userService;
+    private final PersonDetailsService personDetailsService;
     private final UserValidator userValidator;
 
     @Autowired
-    public RegistrationController(UserService userService, UserValidator userValidator) {
-        this.userService = userService;
+    public RegistrationController(PersonDetailsService personDetailsService, UserValidator userValidator) {
+        this.personDetailsService = personDetailsService;
         this.userValidator = userValidator;
     }
 
     @GetMapping("/registration")
     public String registration(Model model) {
-        model.addAttribute("userForm", new User());
-
+        model.addAttribute("personForm", new Person());
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String addUser(@ModelAttribute("userForm") @Valid User userForm, BindingResult bindingResult) {
-        userValidator.validate(userForm, bindingResult);
-        if (bindingResult.hasErrors()) {
-            return "registration";
-        }
-        userService.register(userForm);
+    public String addUser(@ModelAttribute("personForm") @Valid Person personForm, BindingResult bindingResult) {
+        personDetailsService.register(personForm);
         return "redirect:/";
     }
 }

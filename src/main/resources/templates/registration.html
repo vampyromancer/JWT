@@ -8,12 +8,17 @@
 </head>
 <body>
 <div>
-  <form th:method="POST" th:action="@{/registration}" th:object="${userForm}">
+  <form th:method="POST" th:action="@{/registration}" th:object="${personForm}">
     <h2>Регистрация</h2>
     <div>
       <label for="username">Введите имя пользователя: </label>
       <input type="text" th:field="*{username}" id="username"/>
       <p style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</p>
+    </div>
+    <div>
+      <label for="age">Введите возраст пользователя: </label>
+      <input type="text" th:field="*{age}" id="age"/>
+      <p style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">age error</p>
     </div>
     <div>
       <label for="password">Введите пароль пользователя: </label>
