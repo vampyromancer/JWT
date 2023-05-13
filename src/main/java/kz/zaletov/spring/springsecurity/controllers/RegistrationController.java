@@ -32,6 +32,10 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String addUser(@ModelAttribute("personForm") @Valid Person personForm, BindingResult bindingResult) {
+        userValidator.validate(personForm, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "registration";
+        }
         personDetailsService.register(personForm);
         return "redirect:/";
     }
