@@ -1,6 +1,7 @@
 package kz.zaletov.spring.springsecurity.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,7 @@ public class Person {
     private Long id;
     @Size(min=2, message = "Не меньше 2 знаков")
     private String username;
+    @Min(value = 0)
     private int age;
     @Size(min=2, message = "Не меньше 2 знаков")
     private String password;
